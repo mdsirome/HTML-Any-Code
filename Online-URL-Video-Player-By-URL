@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online URL Video Player</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-control {
+      border: none;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .btn {
+      border-radius: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-primary:hover,
+    .btn-danger:hover,
+    .btn-secondary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .btn-primary:focus,
+    .btn-danger:focus,
+    .btn-secondary:focus {
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+    }
+
+    #videoControls {
+      display: none;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-control-range {
+      width: 100%;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    #videoMetadata {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    hr {
+      margin: 20px 0;
+      border: 0;
+      border-top: 1px solid #ddd;
+    }
+
+    #videoFiltersContainer {
+      margin-bottom: 20px;
+    }
+
+    .row > .col-sm-6 {
+      margin-bottom: 20px;
+    }
+
+    .row > .col-sm-6:last-child {
+      margin-bottom: 0;
+    }
+
+    .video-player-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .video-player-controls button {
+      margin-right: 10px;
+    }
+
+    .video-player-controls input[type="range"] {
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Online URL Video Player</h1>
+    <div class="form-group">
+      <input type="text" id="videoUrl" class="form-control" placeholder="Enter video URL">
+    </div>
+    <div class="form-group">
+      <button id="playButton" class="btn btn-primary">Play</button>
+      <button id="stopButton" class="btn btn-danger">Stop</button>
+      <button id="fullscreenButton" class="btn btn-secondary">Fullscreen</button>
+    </div>
+    <div class="video-container" id="videoContainer"></div>
+    <div id="videoControls">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="volumeRange">Volume</label>
+            <input type="range" id="volumeRange" class="form-control-range" min="0" max="1" step="0.1" value="1">
+            <button id="muteButton" class="btn btn-secondary">Mute</button>
+          </div>
+          <div class="col-sm-6">
+            <label for="seekRange">Seek</label>
+            <input type="range" id="seekRange" class="form-control-range" min="0" step="1" value="0">
+          </div>
+        </div>
+      </div>
+      <div id="videoMetadata"></div>
+      <hr>
+      <div id="videoFiltersContainer">
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="brightnessRange">Brightness</label>
+            <input type="range" id="brightnessRange" class="form-control-range" min="0" max="200" step="1" value="100">
+            <label for="contrastRange">Contrast</label>
+            <input type="range" id="contrastRange" class="form-control-range" min="0" max="200" step="1" value="100">
+            <label for="saturateRange">Saturation</label>
+            <input type="range" id="saturateRange" class="form-control-range" min="0" max="200" step="1" value="100">
+            <label for="hueRotateRange">Hue Rotation</label>
+            <input type="range" id="hueRotateRange" class="form-control-range" min="0" max="360" step="1" value="0">
+          </div>
+          <div class="col-sm-6">
+            <label for="invertRange">Invert</label>
+            <input type="range" id="invertRange" class="form-control-range" min="0" max="100" step="1" value="0">
+            <label for="grayscaleRange">Grayscale</label>
+            <input type="range" id="grayscaleRange" class="form-control-range" min="0" max="100" step="1" value="0">
+            <label for="sepiaRange">Sepia</label>
+            <input type="range" id="sepiaRange" class="form-control-range" min="0" max="100" step="1" value="0">
+          </div>
+        </div>
+      </div>
+      <div class="video-player-controls">
+        <button id="resetFiltersButton" class="btn btn-secondary">Reset Filters</button>
+        <button id="applyFiltersButton" class="btn btn-primary">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var videoUrlInput = $('#videoUrl');
+      var playButton = $('#playButton');
+      var stopButton = $('#stopButton');
+      var fullscreenButton = $('#fullscreenButton');
+      var videoContainer = $('#videoContainer');
+      var videoControls = $('#videoControls');
+      var volumeRange = $('#volumeRange');
+      var muteButton = $('#muteButton');
+      var seekRange = $('#seekRange');
+      var brightnessRange = $('#brightnessRange');
+      var contrastRange = $('#contrastRange');
+      var saturateRange = $('#saturateRange');
+      var hueRotateRange = $('#hueRotateRange');
+      var invertRange = $('#invertRange');
+      var grayscaleRange = $('#grayscaleRange');
+      var sepiaRange = $('#sepiaRange');
+      var videoPlayer;
+
+      playButton.click(function() {
+        var videoUrl = videoUrlInput.val();
+        if (videoUrl) {
+          videoContainer.html('<video id="videoPlayer" controls><source src="' + videoUrl + '"></video>');
+          videoPlayer = $('#videoPlayer');
+          videoControls.show();
+          videoPlayer[0].addEventListener('loadedmetadata', function() {
+            var duration = videoPlayer[0].duration;
+            var formattedDuration = formatTime(duration);
+            $('#videoMetadata').html('Duration: ' + formattedDuration);
+          });
+
+          videoPlayer[0].addEventListener('timeupdate', function() {
+            var currentTime = videoPlayer[0].currentTime;
+            var formattedCurrentTime = formatTime(currentTime);
+            $('#seekRange').val(Math.floor(currentTime));
+            $('#videoMetadata').html('Duration: ' + formattedDuration + ' | Current Time: ' + formattedCurrentTime);
+          });
+        }
+      });
+
+      stopButton.click(function() {
+        videoPlayer[0].pause();
+        videoPlayer[0].currentTime = 0;
+        playButton.html('Play');
+      });
+
+      fullscreenButton.click(function() {
+        if (videoPlayer[0].requestFullscreen) {
+          videoPlayer[0].requestFullscreen();
+        } else if (videoPlayer[0].mozRequestFullScreen) {
+          videoPlayer[0].mozRequestFullScreen();
+        } else if (videoPlayer[0].webkitRequestFullscreen) {
+          videoPlayer[0].webkitRequestFullscreen();
+        } else if (videoPlayer[0].msRequestFullscreen) {
+          videoPlayer[0].msRequestFullscreen();
+        }
+      });
+
+      volumeRange.on('input', function() {
+        videoPlayer[0].volume = $(this).val();
+      });
+
+      muteButton.click(function() {
+        if (videoPlayer[0].muted) {
+          videoPlayer[0].muted = false;
+          $(this).html('Mute');
+        } else {
+          videoPlayer[0].muted = true;
+          $(this).html('Unmute');
+        }
+      });
+
+      seekRange.on('input', function() {
+        videoPlayer[0].currentTime = $(this).val();
+      });
+
+      brightnessRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'brightness(' + value + '%)');
+      });
+
+      contrastRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'contrast(' + value + '%)');
+      });
+
+      saturateRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'saturate(' + value + '%)');
+      });
+
+      hueRotateRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'hue-rotate(' + value + 'deg)');
+      });
+
+      invertRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'invert(' + value + '%)');
+      });
+
+      grayscaleRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'grayscale(' + value + '%)');
+      });
+
+      sepiaRange.on('input', function() {
+        var value = $(this).val();
+        videoPlayer.css('filter', 'sepia(' + value + '%)');
+      });
+
+      $('#resetFiltersButton').click(function() {
+        videoPlayer.css('filter', '');
+      });
+
+      $('#applyFiltersButton').click(function() {
+        videoPlayer[0].play();
+      });
+
+      function formatTime(seconds) {
+        var minutes = Math.floor(seconds / 60);
+        seconds = Math.floor(seconds % 60);
+        return pad(minutes) + ':' + pad(seconds);
+      }
+
+      function pad(number) {
+        return (number < 10) ? '0' + number : number;
+      }
+    });
+  </script>
+</body>
+</html>
