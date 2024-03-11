@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My IP Address System</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+body {
+  background-color: #f2f2f2;
+  color: #333;
+  font-family: Arial, sans-serif;
+  padding-top: 50px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #555;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ip-address {
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.ip-info {
+  font-size: 18px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.feature-label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.feature-value {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.ip-info hr {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My IP Address</h1>
+    <div class="ip-address"></div>
+    <div class="ip-info"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var ipAddressElement = $('.ip-address');
+      var ipInfoElement = $('.ip-info');
+
+      // Make an API request to get the IP information
+      $.getJSON('https://api.ipify.org?format=json', function(data) {
+        var ipAddress = data.ip;
+        ipAddressElement.text('Your IP address is: ' + ipAddress);
+
+        // Make another API request to get detailed IP information
+        $.getJSON('https://ipapi.co/' + ipAddress + '/json/', function(data) {
+          var organizationName = data.org ? data.org : 'N/A';
+          var organizationWebsite = data.website ? data.website : 'N/A';
+          var organizationEmail = data.abuse_email ? data.abuse_email : 'N/A';
+          var organizationPhone = data.abuse_phone ? data.abuse_phone : 'N/A';
+          var organizationCountry = data.abuse_country ? data.abuse_country : 'N/A';
+          var isp = data.isp ? data.isp : 'N/A';
+          var ispDomain = data.domain ? data.domain : 'N/A';
+          var asNumber = data.asn ? data.asn : 'N/A';
+          var asOrganization = data.as_organization ? data.as_organization : 'N/A';
+          var city = data.city;
+          var region = data.region;
+          var country = data.country_name;
+          var connectionSpeed = data.connection ? data.connection : 'N/A';
+          var state = data.region_code ? data.region_code : 'N/A';
+          var timezone = data.timezone ? data.timezone : 'N/A';
+          var localTime = data.utc_offset ? data.utc_offset : 'N/A';
+          var district = data.district ? data.district : 'N/A';
+          var zipCode = data.postal ? data.postal : 'N/A';
+          var areaCode = data.area_code ? data.area_code : 'N/A';
+          var iddCode = data.country_calling_code ? data.country_calling_code : 'N/A';
+          var weatherStation = data.station ? data.station : 'N/A';
+          var latitude = data.latitude ? data.latitude : 'N/A';
+          var longitude = data.longitude ? data.longitude : 'N/A';
+          var currency = data.currency ? data.currency : 'N/A';
+          var currencySymbol = data.currency_symbol ? data.currency_symbol : 'N/A';
+          var currencyCode = data.currency_code ? data.currency_code : 'N/A';
+          var language = data.languages ? data.languages : 'N/A';
+          var population = data.population ? data.population : 'N/A';
+          var callingCode = data.country_calling_code ? data.country_calling_code : 'N/A';
+          var regionCode = data.region_code ? data.region_code : 'N/A';
+          var continent = data.continent_name ? data.continent_name : 'N/A';
+          var continentCode = data.continent_code ? data.continent_code : 'N/A';
+          var continentPopulation = data.continent_population ? data.continent_population : 'N/A';
+          var regionPopulation = data.region_population ? data.region_population : 'N/A';
+          var countryPopulation = data.country_population ? data.country_population : 'N/A';
+          var elevation = data.elevation ? data.elevation + 'm' : 'N/A';
+          var postalAddress = data.city + ', ' + data.region + ', ' + data.country_name + ', ' + data.postal;
+          var mobileBrand = data.mobile_brand ? data.mobile_brand : 'N/A';
+          var mcc = data.mcc ? data.mcc : 'N/A';
+          var mnc = data.mnc ? data.mnc : 'N/A';
+          var weatherDescription = data.weather ? data.weather.description : 'N/A';
+          var weatherTemperature = data.weather ? data.weather.temperature : 'N/A';
+          var weatherHumidity = data.weather ? data.weather.humidity : 'N/A';
+          var weatherWindSpeed = data.weather ? data.weather.wind_speed : 'N/A';
+          var weatherClouds = data.weather ? data.weather.clouds : 'N/A';
+          var weatherIcon = data.weather ? data.weather.icon : 'N/A';
+
+          ipInfoElement.html('<div class="feature-label">Organization Name:</div> ' + organizationName + '<br>' +
+                             '<div class="feature-label">Organization Website:</div> ' + organizationWebsite + '<br>' +
+                             '<div class="feature-label">Organization Email:</div> ' + organizationEmail + '<br>' +
+                             '<div class="feature-label">Organization Phone:</div> ' + organizationPhone + '<br>' +
+                             '<div class="feature-label">Organization Country:</div> ' + organizationCountry + '<br>' +
+                             '<div class="feature-label">ISP:</div> ' + isp + '<br>' +
+                             '<div class="feature-label">ISP Domain:</div> ' + ispDomain + '<br>' +
+                             '<div class="feature-label">Autonomous System (AS) Number:</div> ' + asNumber + '<br>' +
+                             '<div class="feature-label">AS Organization:</div> ' + asOrganization + '<br>' +
+                             '<div class="feature-label">City:</div> ' + city + '<br>' +
+                             '<div class="feature-label">Region:</div> ' + region + '<br>' +
+                             '<div class="feature-label">Country:</div> ' + country + '<br>' +
+                             '<div class="feature-label">Connection Speed:</div> ' + connectionSpeed + '<br>' +
+                             '<div class="feature-label">State:</div> ' + state + '<br>' +
+                             '<div class="feature-label">Time Zone:</div> ' + timezone + '<br>' +
+                             '<div class="feature-label">Local Time:</div> ' + localTime + '<br>' +
+                             '<div class="feature-label">District:</div> ' + district + '<br>' +
+                             '<div class="feature-label">ZIP Code:</div> ' + zipCode + '<br>' +
+                             '<div class="feature-label">Area Code:</div> ' + areaCode + '<br>' +
+                             '<div class="feature-label">IDD Code:</div> ' + iddCode + '<br>' +
+                             '<div class="feature-label">Weather Station:</div> ' + weatherStation + '<br>' +
+                             '<div class="feature-label">Latitude:</div> ' + latitude + '<br>' +
+                             '<div class="feature-label">Longitude:</div> ' + longitude + '<br>' +
+                             '<div class="feature-label">Currency:</div> ' + currency + '<br>' +
+                             '<div class="feature-label">Currency Symbol:</div> ' + currencySymbol + '<br>' +
+                             '<div class="feature-label">Currency Code:</div> ' + currencyCode + '<br>' +
+                             '<div class="feature-label">Language:</div> ' + language + '<br>' +
+                             '<div class="feature-label">Population:</div> ' + population + '<br>' +
+                             '<div class="feature-label">Calling Code:</div> ' + callingCode + '<br>' +
+                             '<div class="feature-label">Region Code:</div> ' + regionCode + '<br>' +
+                             '<div class="feature-label">Continent:</div> ' + continent + '<br>' +
+                             '<div class="feature-label">Continent Code:</div> ' + continentCode + '<br>' +
+                             '<div class="feature-label">Continent Population:</div> ' + continentPopulation + '<br>' +
+                             '<div class="feature-label">Region Population:</div> ' + regionPopulation + '<br>' +
+                             '<div class="feature-label">Country Population:</div> ' + countryPopulation + '<br>' +
+                             '<div class="feature-label">Elevation:</div> ' + elevation + '<br>' +
+                             '<div class="feature-label">Postal Address:</div> ' + postalAddress + '<br>' +
+                             '<div class="feature-label">Mobile Brand:</div> ' + mobileBrand + '<br>' +
+                             '<div class="feature-label">Mobile Country Code (MCC):</div> ' + mcc + '<br>' +
+                             '<div class="feature-label">Mobile Network Code (MNC):</div> ' + mnc + '<br>' +
+                             '<div class="feature-label">Weather Description:</div> ' + weatherDescription + '<br>' +
+                             '<div class="feature-label">Weather Temperature:</div> ' + weatherTemperature + '<br>' +
+                             '<div class="feature-label">Weather Humidity:</div> ' + weatherHumidity + '<br>' +
+                             '<div class="feature-label">Weather Wind Speed:</div> ' + weatherWindSpeed + '<br>' +
+                             '<div class="feature-label">Weather Clouds:</div> ' + weatherClouds + '<br>' +
+                             '<div class="feature-label">Weather Icon:</div> ' + weatherIcon + '<br>');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
