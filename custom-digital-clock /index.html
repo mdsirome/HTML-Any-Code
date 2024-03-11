@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Digital Clock</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    /* Clock Styles */
+    body {
+  background-color: #FFFFFF;
+}
+    .clock {
+  font-size: 72px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 100px;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  background-image: linear-gradient(45deg, #EA8D8D , #A890FE);
+  border: 3px solid #00ffd5;
+  border-radius: 50%;
+  padding: 50px;
+}
+
+.clock-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.clock-position {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+    /* Settings Styles */
+    .settings {
+      text-align: center;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #C2E7FF;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  
+    .setting-label {
+      font-weight: bold;
+    }
+  
+    .color-picker {
+      width: 200px;
+      margin: 10px auto;
+    }
+  
+    .setting-input {
+      width: 200px;
+      margin: 10px auto;
+    }
+  
+    /* Additional Styles */
+    body {
+      background-color: #FFFFFF;
+    }
+  
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  
+    .row {
+      margin-bottom: 20px;
+    }
+  
+    .form-check-label {
+      cursor: pointer;
+    }
+  
+    .form-group {
+      margin-bottom: 20px;
+    }
+  
+    .form-control {
+      display: block;
+      width: 100%;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #ffffff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+  
+    .form-control:focus {
+      color: #495057;
+      background-color: #ffffff;
+      border-color: #80bdff;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  
+    .form-control-color-picker {
+      padding: 0;
+      height: 38px;
+      border-radius: 5px;
+    }
+  
+    .form-control-color-picker:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  
+    .btn {
+      display: inline-block;
+      font-weight: 400;
+      color: #212529;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .btn-primary {
+    color: #ffffff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-primary:hover {
+    color: #ffffff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+
+  .btn-primary:focus,
+  .btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  }
+
+  .btn-primary.disabled,
+  .btn-primary:disabled {
+    color: #ffffff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-primary:not(:disabled):not(.disabled):active,
+  .btn-primary:not(:disabled):not(.disabled).active,
+  .show > .btn-primary.dropdown-toggle {
+    color: #ffffff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+  }
+
+  .btn-primary:not(:disabled):not(.disabled):active:focus,
+  .btn-primary:not(:disabled):not(.disabled).active:focus,
+  .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  }
+/* Clock Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style>
+  
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="clock-container">
+          <div class="clock-position">
+            <div class="clock" id="clock"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 settings">
+        <label class="setting-label">Settings:</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="showSeconds">
+          <label class="form-check-label" for="showSeconds">
+            Show Seconds
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="showDate">
+          <label class="form-check-label" for="showDate">
+            Show Date
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="twentyFourHour">
+          <label class="form-check-label" for="twentyFourHour">
+            24-Hour Format
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="timeSeparator">Time Separator:</label>
+          <input type="text" class="form-control" id="timeSeparator" value=":">
+        </div>
+        <div class="form-group">
+          <label for="timeOrder">Time Format Order:</label>
+          <select class="form-control" id="timeOrder">
+            <option value="hoursMinutesSeconds">Hours-Minutes-Seconds</option>
+            <option value="minutesHoursSeconds">Minutes-Hours-Seconds</option>
+            <option value="secondsMinutesHours">Seconds-Minutes-Hours</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="clockPosition">Clock Position:</label>
+          <select class="form-control" id="clockPosition">
+            <option value="topLeft">Top Left</option>
+            <option value="topCenter">Top Center</option>
+            <option value="topRight">Top Right</option>
+            <option value="middleLeft">Middle Left</option>
+            <option value="middleCenter">Middle Center</option>
+            <option value="middleRight">Middle Right</option>
+            <option value="bottomLeft">Bottom Left</option>
+            <option value="bottomCenter">Bottom Center</option>
+            <option value="bottomRight">Bottom Right</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fontSize">Font Size:</label>
+          <input type="number" class="form-control" id="fontSize" value="48" min="10">
+        </div>
+        <div class="form-group">
+          <label for="fontFamily">Font Family:</label>
+          <select class="form-control" id="fontFamily">
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fontColor">Font Color:</label>
+          <input type="color" class="form-control color-picker" id="fontColor" value="#ffffff">
+        </div>
+        <div class="form-group">
+          <label for="bgColor">Background Color:</label>
+          <input type="color" class="form-control color-picker" id="bgColor" value="#000000">
+        </div>
+        <div class="form-group">
+          <label for="fontStyle">Font Style:</label>
+          <select class="form-control" id="fontStyle">
+            <option value="normal">Normal</option>
+            <option value="italic">Italic</option>
+            <option value="oblique">Oblique</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fontWeight">Font Weight:</label>
+          <select class="form-control" id="fontWeight">
+            <option value="normal">Normal</option>
+            <option value="bold">Bold</option>
+            <option value="bolder">Bolder</option>
+            <option value="lighter">Lighter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="textAlign">Text Alignment:</label>
+          <select class="form-control" id="textAlign">
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="textPrefix">Text Prefix:</label>
+          <input type="text" class="form-control" id="textPrefix" value="">
+        </div>
+        <div class="form-group">
+          <label for="textSuffix">Text Suffix:</label>
+          <input type="text" class="form-control" id="textSuffix" value="">
+        </div>
+        <div class="form-group">
+          <label for="backgroundColor">Background Color:</label>
+          <input type="color" class="form-control color-picker" id="backgroundColor" value="#ffffff">
+        </div>
+        <div class="form-group">
+          <label for="borderWidth">Border Width:</label>
+          <input type="number" class="form-control" id="borderWidth" value="0" min="0">
+        </div>
+        <div class="form-group">
+          <label for="borderColor">Border Color:</label>
+          <input type="color" class="form-control color-picker" id="borderColor" value="#000000">
+        </div>
+        <div class="form-group">
+          <label for="textShadowColor">Text Shadow Color:</label>
+          <input type="color" class="form-control color-picker" id="textShadowColor" value="#000000">
+        </div>
+        <div class="form-group">
+          <label for="textShadowX">Text Shadow X-offset:</label>
+          <input type="number" class="form-control" id="textShadowX" value="0">
+        </div>
+        <div class="form-group">
+          <label for="textShadowY">Text Shadow Y-offset:</label>
+          <input type="number" class="form-control" id="textShadowY" value="0">
+        </div>
+        <div class="form-group">
+          <label for="textShadowBlur">Text Shadow Blur:</label>
+          <input type="number" class="form-control" id="textShadowBlur" value="0">
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="animateClock">
+          <label class="form-check-label" for="animateClock">
+            Animate Clock
+          </label>
+          <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+window.addEventListener("load", function() {
+  // Retrieve settings from local storage
+  var settings = JSON.parse(localStorage.getItem("clockSettings"));
+
+  if (settings) {
+    // Apply settings to the elements
+    document.getElementById("showSeconds").checked = settings.showSeconds;
+    document.getElementById("showDate").checked = settings.showDate;
+    document.getElementById("twentyFourHour").checked = settings.twentyFourHour;
+    document.getElementById("timeSeparator").value = settings.timeSeparator;
+    document.getElementById("timeOrder").value = settings.timeOrder;
+    document.getElementById("clockPosition").value = settings.clockPosition;
+    document.getElementById("fontSize").value = settings.fontSize;
+    document.getElementById("fontFamily").value = settings.fontFamily;
+    document.getElementById("fontColor").value = settings.fontColor;
+    document.getElementById("bgColor").value = settings.bgColor;
+    document.getElementById("fontStyle").value = settings.fontStyle;
+    document.getElementById("fontWeight").value = settings.fontWeight;
+    document.getElementById("textAlign").value = settings.textAlign;
+    document.getElementById("textPrefix").value = settings.textPrefix;
+    document.getElementById("textSuffix").value = settings.textSuffix;
+    document.getElementById("backgroundColor").value = settings.backgroundColor;
+    document.getElementById("borderWidth").value = settings.borderWidth;
+    document.getElementById("borderColor").value = settings.borderColor;
+    document.getElementById("textShadowColor").value = settings.textShadowColor;
+    document.getElementById("textShadowX").value = settings.textShadowX;
+    document.getElementById("textShadowY").value = settings.textShadowY;
+    document.getElementById("textShadowBlur").value = settings.textShadowBlur;
+    document.getElementById("animateClock").checked = settings.animateClock;
+  }
+});
+
+
+window.addEventListener("beforeunload", function() {
+  // Get the current settings from the elements
+  var settings = {
+    showSeconds: document.getElementById("showSeconds").checked,
+    showDate: document.getElementById("showDate").checked,
+    twentyFourHour: document.getElementById("twentyFourHour").checked,
+    timeSeparator: document.getElementById("timeSeparator").value,
+    timeOrder: document.getElementById("timeOrder").value,
+    clockPosition: document.getElementById("clockPosition").value,
+    fontSize: document.getElementById("fontSize").value,
+    fontFamily: document.getElementById("fontFamily").value,
+    fontColor: document.getElementById("fontColor").value,
+    bgColor: document.getElementById("bgColor").value,
+    fontStyle: document.getElementById("fontStyle").value,
+    fontWeight: document.getElementById("fontWeight").value,
+    textAlign: document.getElementById("textAlign").value,
+    textPrefix: document.getElementById("textPrefix").value,
+    textSuffix: document.getElementById("textSuffix").value,
+    backgroundColor: document.getElementById("backgroundColor").value,
+    borderWidth: document.getElementById("borderWidth").value,
+    borderColor: document.getElementById("borderColor").value,
+    textShadowColor: document.getElementById("textShadowColor").value,
+    textShadowX: document.getElementById("textShadowX").value,
+    textShadowY: document.getElementById("textShadowY").value,
+    textShadowBlur: document.getElementById("textShadowBlur").value,
+    animateClock: document.getElementById("animateClock").value,
+};
+
+// Save the settings to local storage
+localStorage.setItem("clockSettings", JSON.stringify(settings));
+});
+    function displayTime() {
+      var date = new Date();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+      
+      var showSeconds = document.getElementById("showSeconds").checked;
+      var showDate = document.getElementById("showDate").checked;
+      var twentyFourHour = document.getElementById("twentyFourHour").checked;
+      var timeSeparator = document.getElementById("timeSeparator").value;
+      var timeOrder = document.getElementById("timeOrder").value;
+      var clockPosition = document.getElementById("clockPosition").value;
+      var fontSize = document.getElementById("fontSize").value + "px";
+      var fontFamily = document.getElementById("fontFamily").value;
+      var fontColor = document.getElementById("fontColor").value;
+      var bgColor = document.getElementById("bgColor").value;
+      var fontStyle = document.getElementById("fontStyle").value;
+      var fontWeight = document.getElementById("fontWeight").value;
+      var textAlign = document.getElementById("textAlign").value;
+      var textPrefix = document.getElementById("textPrefix").value;
+      var textSuffix = document.getElementById("textSuffix").value;
+      var backgroundColor = document.getElementById("backgroundColor").value;
+      var borderWidth = document.getElementById("borderWidth").value + "px";
+      var borderColor = document.getElementById("borderColor").value;
+      var textShadowColor = document.getElementById("textShadowColor").value;
+      var textShadowX = document.getElementById("textShadowX").value + "px";
+      var textShadowY = document.getElementById("textShadowY").value + "px";
+      var textShadowBlur = document.getElementById("textShadowBlur").value + "px";
+      var animateClock = document.getElementById("animateClock").checked;
+      
+      var time = formatTime(hours, minutes, seconds, showSeconds, twentyFourHour, timeSeparator, timeOrder);
+      var dateStr = formatDate(date, showDate);
+      
+      var clockElement = document.getElementById("clock");
+      clockElement.innerText = textPrefix + " " + time + " " + textSuffix;
+      clockElement.style.color = fontColor;
+      clockElement.style.backgroundColor = bgColor;
+      clockElement.style.fontSize = fontSize;
+      clockElement.style.fontFamily = fontFamily;
+      clockElement.style.fontStyle = fontStyle;
+      clockElement.style.fontWeight = fontWeight;
+      clockElement.style.textAlign = textAlign;
+      clockElement.parentNode.style.justifyContent = getJustifyContent(clockPosition);
+      clockElement.parentNode.style.alignItems = getAlignItems(clockPosition);
+      clockElement.parentNode.style.backgroundColor = backgroundColor;
+      clockElement.parentNode.style.borderWidth = borderWidth;
+      clockElement.parentNode.style.borderColor = borderColor;
+      clockElement.style.textShadow = `${textShadowX} ${textShadowY} ${textShadowBlur} ${textShadowColor}`;
+      
+      if (animateClock) {
+        clockElement.style.animation = "pulse 1s infinite";
+      } else {
+        clockElement.style.animation = "none";
+      }
+      
+      if (showDate) {
+        clockElement.innerHTML += "<br>" + dateStr;
+      }
+    }
+    // Add the following code inside the <script> tag
+
+// Define the default settings object
+var defaultSettings = {
+  showSeconds: false,
+  showDate: false,
+  twentyFourHour: false,
+  timeSeparator: ":",
+  timeOrder: "hoursMinutesSeconds",
+  clockPosition: "middleCenter",
+  fontSize: "48px",
+  fontFamily: "Arial",
+  fontColor: "#ffffff",
+  bgColor: "#000000",
+  fontStyle: "normal",
+  fontWeight: "normal",
+  textAlign: "left",
+  textPrefix: "",
+  textSuffix: "",
+  backgroundColor: "#ffffff",
+  borderWidth: "0px",
+  borderColor: "#000000",
+  textShadowColor: "#000000",
+  textShadowX: "0px",
+  textShadowY: "0px",
+  textShadowBlur: "0px",
+  animateClock: false
+};
+
+// Reset all settings to default values
+function resetToDefault() {
+  document.getElementById("showSeconds").checked = defaultSettings.showSeconds;
+  document.getElementById("showDate").checked = defaultSettings.showDate;
+  document.getElementById("twentyFourHour").checked = defaultSettings.twentyFourHour;
+  document.getElementById("timeSeparator").value = defaultSettings.timeSeparator;
+  document.getElementById("timeOrder").value = defaultSettings.timeOrder;
+  document.getElementById("clockPosition").value = defaultSettings.clockPosition;
+  document.getElementById("fontSize").value = parseInt(defaultSettings.fontSize);
+  document.getElementById("fontFamily").value = defaultSettings.fontFamily;
+  document.getElementById("fontColor").value = defaultSettings.fontColor;
+  document.getElementById("bgColor").value = defaultSettings.bgColor;
+  document.getElementById("fontStyle").value = defaultSettings.fontStyle;
+  document.getElementById("fontWeight").value = defaultSettings.fontWeight;
+  document.getElementById("textAlign").value = defaultSettings.textAlign;
+  document.getElementById("textPrefix").value = defaultSettings.textPrefix;
+  document.getElementById("textSuffix").value = defaultSettings.textSuffix;
+  document.getElementById("backgroundColor").value = defaultSettings.backgroundColor;
+  document.getElementById("borderWidth").value = parseInt(defaultSettings.borderWidth);
+  document.getElementById("borderColor").value = defaultSettings.borderColor;
+  document.getElementById("textShadowColor").value = defaultSettings.textShadowColor;
+  document.getElementById("textShadowX").value = parseInt(defaultSettings.textShadowX);
+  document.getElementById("textShadowY").value = parseInt(defaultSettings.textShadowY);
+  document.getElementById("textShadowBlur").value = parseInt(defaultSettings.textShadowBlur);
+  document.getElementById("animateClock").checked = defaultSettings.animateClock;
+}
+
+// Add click event listener to the reset button
+document.getElementById("resetBtn").addEventListener("click", resetToDefault);
+
+    
+    function formatTime(hours, minutes, seconds, showSeconds, twentyFourHour, timeSeparator, timeOrder) {
+      var time = "";
+      
+      if (twentyFourHour) {
+        time += leadingZero(hours);
+      } else {
+        time += leadingZero(hours % 12 || 12);
+      }
+      
+      if (timeOrder === "hoursMinutesSeconds") {
+        time += timeSeparator + leadingZero(minutes) + timeSeparator + leadingZero(seconds);
+      } else if (timeOrder === "minutesHoursSeconds") {
+        time += timeSeparator + leadingZero(minutes) + timeSeparator + leadingZero(seconds);
+      } else if (timeOrder === "secondsMinutesHours") {
+        time += timeSeparator + leadingZero(seconds) + timeSeparator + leadingZero(minutes);
+      }
+      
+      if (showSeconds) {
+        time += timeSeparator + leadingZero(seconds);
+      }
+      
+      return time;
+    }
+    
+    function leadingZero(timeUnit) {
+      return timeUnit < 10 ? "0" + timeUnit : timeUnit;
+    }
+    
+    function formatDate(date, showDate) {
+      if (!showDate) {
+        return "";
+      }
+      
+      var options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString(undefined, options);
+    }
+    
+    function getJustifyContent(clockPosition) {
+      if (clockPosition.includes("Left")) {
+        return "flex-start";
+      } else if (clockPosition.includes("Right")) {
+        return "flex-end";
+      } else {
+        return "center";
+      }
+    }
+    
+    function getAlignItems(clockPosition) {
+      if (clockPosition.includes("Top")) {
+        return "flex-start";
+      } else if (clockPosition.includes("Bottom")) {
+        return "flex-end";
+      } else {
+        return "center";
+      }
+    }
+    
+    setInterval(displayTime, 1000);
+  </script>
+</body>
+</html>
