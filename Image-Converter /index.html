@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px;
+        }
+
+        #outputImage {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">Image Converter</h1>
+
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card">
+                    <div class="card-content">
+                        <label for="imageInput">Choose an image:</label>
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>File</span>
+                                <input type="file" id="imageInput" accept="image/*">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+
+                        <label for="outputFormat">Select output format:</label>
+                        <div class="input-field">
+                            <select id="outputFormat">
+                                <option value="png">PNG</option>
+                                <option value="jpg">JPG</option>
+                                <option value="webp">WebP</option>
+                                <option value="bmp">BMP</option>
+                                <option value="gif">GIF</option>
+                                <option value="tiff">TIFF</option>
+                                <option value="svg">SVG</option>
+                                <option value="ico">ICO</option>
+                                <option value="jpeg">JPEG</option>
+                                <option value="apng">APNG</option>
+                                <option value="pdf">PDF</option>
+                                <option value="jp2">JP2</option>
+                                <option value="avif">AVIF</option>
+                                <option value="heif">HEIF</option>
+                                <option value="raw">RAW</option>
+                                <option value="tga">TGA</option>
+                                <option value="exr">EXR</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+
+                        <button class="btn waves-effect waves-light" onclick="convertImage()">Convert</button>
+
+                        <div id="outputImageContainer">
+                            <h2 class="center-align">Converted Image</h2>
+                            <img id="outputImage" alt="Converted Image" class="responsive-img">
+                            <button id="downloadButton" class="btn waves-effect waves-light" onclick="downloadImage()">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        function convertImage() {
+            const inputElement = document.getElementById('imageInput');
+            const outputFormat = document.getElementById('outputFormat').value;
+            const outputImageElement = document.getElementById('outputImage');
+            const downloadButton = document.getElementById('downloadButton');
+
+            if (inputElement.files.length > 0) {
+                const inputFile = inputElement.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const image = new Image();
+                    image.src = e.target.result;
+
+                    image.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+
+                        ctx.drawImage(image, 0, 0);
+
+                        const convertedImageData = canvas.toDataURL(`image/${outputFormat}`);
+                        outputImageElement.src = convertedImageData;
+
+                        // Display the download button
+                        downloadButton.style.display = 'inline-block';
+                    };
+                };
+
+                reader.readAsDataURL(inputFile);
+            }
+        }
+
+        function downloadImage() {
+            const outputImageElement = document.getElementById('outputImage');
+            const downloadButton = document.getElementById('downloadButton');
+
+            const link = document.createElement('a');
+            link.href = outputImageElement.src;
+            link.download = 'converted_image.' + document.getElementById('outputFormat').value;
+            link.click();
+
+            // Hide the download button after download
+            downloadButton.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            M.AutoInit();
+        });
+    </script>
+</body>
+</html>
